@@ -1,0 +1,49 @@
+
+version: '3.8'
+services:
+  mongo:
+    image: mongo:6
+    container_name: steam-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data/mongo:/data/db
+
+  mongo-express:
+    image: mongo-express:1.0.2-20
+    container_name: steam-mongo-express
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://mongo:27017/
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin
+    depends_on:
+      - mongo
+
+  airflow:
+    image: apache/airflow:2.9.2
+    container_name: steam-airflow
+    restart: unless-stopped
+    environment:
+      AIRFLOW__CORE__EXECUTOR: SequentialExecutor
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW_HOME: /opt/airflow
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./etl:/opt/airflow/etl
+      - ./.env:/opt/airflow/.env
+      - ./logs:/opt/airflow/logs
+    command: >
+      bash -lc "
+      airflow db migrate &&
+      airflow users create --username admin --password admin --firstname admin --lastname admin --role Admin --email admin@example.com &&
+      airflow webserver &
+      airflow scheduler
+      "
+    depends_on:
+      - mongo
