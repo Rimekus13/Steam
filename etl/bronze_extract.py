@@ -1,18 +1,26 @@
 # etl/bronze_extract.py
 from datetime import datetime
 from tqdm import tqdm
+from pathlib import Path
+import gzip, json
+
 from .http import fetch_reviews_page
 from .state import load_state, save_state
-from .mongo_utils import bulk_upsert_raw, ensure_indexes
+# plus besoin de bulk_upsert_raw / ensure_indexes pour le RAW → on les retire
+
+def _raw_out_dir(app_id: str, dt: str) -> Path:
+    """Dossier de sortie pour stocker le RAW (datalake)."""
+    d = Path(f"data/raw/{app_id}/{dt}")
+    d.mkdir(parents=True, exist_ok=True)
+    return d
 
 def extract_app(app_id: str, mode: str = "incr", for_airflow: bool = False, max_pages: int = 200) -> str:
-    """API Steam → RAW Mongo (reviews_{app_id}) avec logs de debug."""
-    ensure_indexes(app_id, for_airflow=for_airflow)
-
+    """API Steam → RAW datalake (JSON.gz) avec logs de debug."""
     state = load_state(app_id)
     max_seen = state.get("max_timestamp_updated", 0)
     cursor = "*" if mode == "full" else state.get("last_cursor", "*")
 
+    dt = datetime.utcnow().strftime("%Y-%m-%d")
     pages = 0
     total = 0
     pbar = tqdm(desc=f"Extract {app_id}")
@@ -31,7 +39,11 @@ def extract_app(app_id: str, mode: str = "incr", for_airflow: bool = False, max_
             print("[INFO] No reviews on this page → stop.")
             break
 
-        bulk_upsert_raw(app_id, reviews, for_airflow=for_airflow)
+        # --- Sauvegarde RAW dans le datalake ---
+        out_dir = _raw_out_dir(app_id, dt)
+        out_path = out_dir / f"reviews_{pages:04d}.json.gz"
+        with gzip.open(out_path, "wt", encoding="utf-8") as gf:
+            json.dump(reviews, gf, ensure_ascii=False)
         total += len(reviews)
         pbar.update(len(reviews))
 
@@ -53,6 +65,6 @@ def extract_app(app_id: str, mode: str = "incr", for_airflow: bool = False, max_
             break
 
     pbar.close()
-    print(f"[INFO] Pages fetched={pages-1}, total reviews upserted≈{total}")
+    print(f"[INFO] Pages fetched={pages-1}, total reviews saved≈{total}")
     save_state(app_id, {"max_timestamp_updated": max_seen, "last_cursor": cursor or "*"})
-    return datetime.utcnow().strftime("%Y-%m-%d")
+    return dt

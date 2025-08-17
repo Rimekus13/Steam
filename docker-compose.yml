@@ -1,5 +1,4 @@
-
-version: '3.8'
+# docker-compose.yml
 services:
   mongo:
     image: mongo:6
@@ -7,21 +6,38 @@ services:
     restart: unless-stopped
     ports:
       - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
     volumes:
       - ./data/mongo:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "mongodb://root:example@localhost:27017/admin", "--quiet", "--eval", "db.adminCommand({ping:1})"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
   mongo-express:
-    image: mongo-express:1.0.2-20
+    image: mongo-express:1.0.2
     container_name: steam-mongo-express
+    depends_on:
+      mongo:
+        condition: service_healthy
     restart: unless-stopped
     ports:
-      - "8081:8081"
+      - "8888:8081"
     environment:
-      ME_CONFIG_MONGODB_URL: mongodb://mongo:27017/
-      ME_CONFIG_BASICAUTH_USERNAME: admin
-      ME_CONFIG_BASICAUTH_PASSWORD: admin
-    depends_on:
-      - mongo
+      ME_CONFIG_MONGODB_URL: "mongodb://root:example@mongo:27017/?authSource=admin"
+      ME_CONFIG_BASICAUTH_USERNAME: "admin"
+      ME_CONFIG_BASICAUTH_PASSWORD: "pass"
+      ME_CONFIG_SITE_SSL_ENABLED: "false"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8081/ >/dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
 
   airflow:
     image: apache/airflow:2.9.2
@@ -46,4 +62,5 @@ services:
       airflow scheduler
       "
     depends_on:
-      - mongo
+      mongo:
+        condition: service_healthy
