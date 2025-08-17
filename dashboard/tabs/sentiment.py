@@ -1,40 +1,104 @@
-# tabs/sentiment.py
-import matplotlib.pyplot as plt
-import seaborn as sns
-from utils import DEFAULT_FIGSIZE_WIDE, title, compact_time_axis
+# tabs/sentiment.py — couleurs fixes + visuels lisibles (vert/gris/rouge)
+import pandas as pd
+import numpy as np
+import plotly.express as px
+
+def _ensure_labels(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.copy()
+    if "sentiment" not in df.columns:
+        df["sentiment"] = 0.0
+    if "sentiment_label" not in df.columns:
+        def lab(x):
+            try:
+                if x > 0.05: return "positif"
+                if x < -0.05: return "négatif"
+                return "neutre"
+            except Exception:
+                return "neutre"
+        df["sentiment_label"] = df["sentiment"].apply(lab)
+    return df
+
+def _colors_from_ctx(ctx):
+    return ctx.get("sentiment_colors", {
+        "positif": "#22c55e",
+        "neutre":  "#9ca3af",
+        "négatif": "#ef4444",
+    })
 
 def render(st, ctx):
-    df_f = ctx["df_f"]
-    st.markdown("<div class='card'><h3>Perception globale</h3>", unsafe_allow_html=True)
-    s1,s2 = st.columns([1,1])
-    with s1: sent_min = st.slider("Seuil min. sentiment", -1.0, 1.0, -1.0, 0.05, key="sent_min_slider")
-    with s2: sent_max = st.slider("Seuil max. sentiment", -1.0, 1.0, 1.0, 0.05, key="sent_max_slider")
-    df_sent = df_f[(df_f["sentiment"]>=sent_min) & (df_f["sentiment"]<=sent_max)]
+    df = ctx["df_f"].copy()
+    if df.empty:
+        st.info("Aucun avis avec les filtres actuels.")
+        return
 
-    c1,c2,c3 = st.columns([1.4,1,1])
+    df = _ensure_labels(df)
+    colmap = _colors_from_ctx(ctx)
+
+    # Répartition
+    st.subheader("Répartition du sentiment")
+    c1, c2 = st.columns([1,1])
+    counts = df["sentiment_label"].value_counts(dropna=False).rename_axis("sentiment_label").reset_index(name="n")
+
     with c1:
-        if df_sent["review_date"].notna().any() and len(df_sent):
-            ts=df_sent.dropna(subset=["review_date"]).copy()
-            ts["date"]=ts["review_date"].dt.to_period("W").dt.start_time
-            series=ts.groupby("date")["sentiment"].mean().rolling(3).mean()
-            fig, ax = plt.subplots(figsize=DEFAULT_FIGSIZE_WIDE)
-            ax.plot(series.index, series.values)
-            compact_time_axis(ax,3,6); title(ax,"Tendance (MM x3)")
-            ax.set_ylabel("Score"); ax.set_xlabel("")
-            st.pyplot(fig, use_container_width=True)
-            st.markdown("<div class='small'>Lissage léger pour mieux lire la tendance.</div>", unsafe_allow_html=True)
-        else: st.info("Pas de dates exploitables.")
+        if counts.empty:
+            st.write("—")
+        else:
+            fig = px.pie(
+                counts, names="sentiment_label", values="n",
+                hole=0.55, color="sentiment_label",
+                color_discrete_map=colmap
+            )
+            fig.update_traces(textinfo="percent+label")
+            fig.update_layout(margin=dict(l=10,r=10,t=10,b=10))
+            st.plotly_chart(fig, use_container_width=True)
+
     with c2:
-        dist_df = df_sent.assign(cat=df_sent["sentiment"].apply(lambda s: "Positif" if s>0.05 else ("Négatif" if s<-0.05 else "Neutre"))).groupby("cat").size().reindex(["Positif","Neutre","Négatif"]).fillna(0)
-        fig, ax = plt.subplots(figsize=(4,2.2))
-        ax.bar(dist_df.index, (dist_df.values/dist_df.values.sum()*100 if dist_df.values.sum() else dist_df.values))
-        title(ax,"Répartition"); ax.set_ylabel("%"); ax.set_xlabel("")
-        st.pyplot(fig, use_container_width=True)
-        st.markdown("<div class='small'>Équilibre global des ressentis.</div>", unsafe_allow_html=True)
-    with c3:
-        if len(df_sent):
-            fig, ax = plt.subplots(figsize=(4,2.2))
-            sns.histplot(df_sent["sentiment"], bins=30, kde=True, ax=ax)
-            title(ax,"Distribution des scores"); st.pyplot(fig, use_container_width=True)
-            st.markdown("<div class='small'>Neutre ou polarisé ?</div>", unsafe_allow_html=True)
-    st.markdown("</div>", unsafe_allow_html=True)
+        if counts.empty:
+            st.write("—")
+        else:
+            fig = px.bar(
+                counts.sort_values("sentiment_label"),
+                x="sentiment_label", y="n",
+                color="sentiment_label",
+                color_discrete_map=colmap,
+            )
+            fig.update_layout(xaxis_title="", yaxis_title="Nombre d'avis", margin=dict(l=10,r=10,t=10,b=10))
+            st.plotly_chart(fig, use_container_width=True)
+
+    # Evolution
+    st.subheader("Évolution du sentiment dans le temps")
+    if "review_date" in df.columns and df["review_date"].notna().any():
+        tmp = df.dropna(subset=["review_date"]).copy()
+        tmp["date"] = tmp["review_date"].dt.date
+        daily = tmp.groupby(["date","sentiment_label"]).size().reset_index(name="n")
+        total = tmp.groupby("date").size().reset_index(name="tot")
+        share = daily.merge(total, on="date")
+        share["part"] = share["n"] / share["tot"]
+        cat_order = ["négatif","neutre","positif"]
+        share["sentiment_label"] = pd.Categorical(share["sentiment_label"], categories=cat_order, ordered=True)
+        fig = px.area(
+            share.sort_values("date"),
+            x="date", y="part",
+            color="sentiment_label",
+            color_discrete_map=colmap,
+        )
+        fig.update_yaxes(tickformat=".0%", range=[0,1])
+        fig.update_layout(legend_title="", xaxis_title="", yaxis_title="Part d'avis", margin=dict(l=10,r=10,t=10,b=10))
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.caption("Pas de date disponible pour tracer l'évolution.")
+
+    # Distribution
+    st.subheader("Distribution du score (compound)")
+    dd = df[["sentiment","sentiment_label"]].dropna().copy()
+    if dd.empty:
+        st.write("—")
+        return
+    dd["bin"] = pd.cut(dd["sentiment"], bins=[-1.0,-0.05,0.05,1.0], labels=["négatif","neutre","positif"], include_lowest=True)
+    hist = dd.groupby("bin").size().reindex(["négatif","neutre","positif"]).fillna(0).astype(int).reset_index(name="n")
+    fig = px.bar(
+        hist, x="bin", y="n",
+        color="bin", color_discrete_map={"positif":colmap["positif"], "neutre":colmap["neutre"], "négatif":colmap["négatif"]}
+    )
+    fig.update_layout(xaxis_title="", yaxis_title="Nombre d'avis", margin=dict(l=10,r=10,t=10,b=10))
+    st.plotly_chart(fig, use_container_width=True)

@@ -1,4 +1,4 @@
-# data_loader.py — Mongo + chargement robuste
+# data_loader.py — Mongo + robust loading
 import os
 import requests
 import numpy as np
@@ -64,7 +64,6 @@ def get_game_name(app_id: str) -> str:
         return f"App {app_id}"
 
 def _first_nonempty_series(df: pd.DataFrame, candidates) -> pd.Series:
-    """Retourne la première série non vide parmi les colonnes candidates. Déroule les dicts si besoin."""
     if df is None or df.empty:
         return pd.Series(dtype="object")
     for col in candidates:
@@ -81,13 +80,11 @@ def _first_nonempty_series(df: pd.DataFrame, candidates) -> pd.Series:
 
 @st.cache_data(show_spinner=False)
 def load_df(collection, _db):
-    """Chargement générique d'une collection reviews_<appid> (mode per-collection)."""
     docs = list(_db[collection].find())
     if not docs:
         return pd.DataFrame()
     df = pd.DataFrame(docs)
 
-    # Texte : privilégie le "clean" existant, sinon reconstruit depuis brut
     clean_candidates = ["cleaned_review", "clean_text", "review_clean", "text_clean"]
     raw_candidates   = ["review_text", "review", "content", "text", "body", "reviewBody", "review_text_en"]
 
@@ -103,13 +100,11 @@ def load_df(collection, _db):
     else:
         df["cleaned_review"] = clean_text_series(raw_series)
 
-    # Pour l'explorateur
     if raw_series.str.strip().str.len().sum() == 0:
         df["review_text"] = df["cleaned_review"]
     else:
         df["review_text"] = raw_series
 
-    # Champs usuels
     if "language" not in df.columns:
         df["language"] = "unknown"
     if "voted_up" not in df.columns and "votes_up" in df.columns:
@@ -117,7 +112,6 @@ def load_df(collection, _db):
     elif "voted_up" not in df.columns:
         df["voted_up"] = np.nan
 
-    # Dates
     date_fields_priority = ["review_date", "timestamp_created", "created", "posted", "date", "time_created", "timestamp", "timestamp_updated"]
     found = next((f for f in date_fields_priority if f in df.columns), None)
     if found in ["timestamp_created", "timestamp", "time_created"]:
@@ -127,11 +121,9 @@ def load_df(collection, _db):
     else:
         df["review_date"] = pd.NaT
 
-    # Sentiment calculé si pas présent (per-collection n'a pas toujours 'compound')
     if "compound" not in df.columns:
         df["compound"] = 0.0
 
-    # Colonnes minimales garanties
     for col in ["review_date", "language", "voted_up", "cleaned_review", "review_text", "compound"]:
         if col not in df.columns:
             df[col] = pd.NA

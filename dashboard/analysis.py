@@ -33,15 +33,11 @@ def compute_sentiment(sia, text: str) -> float:
     return sia.polarity_scores(text)["compound"] if isinstance(text, str) else 0.0
 
 def clean_text_series(series: pd.Series) -> pd.Series:
-    """
-    Nettoyage compatible UNICODE : conserve toutes les lettres/chiffres (y compris chinois, cyrillique...)
-    Supprime la ponctuation uniquement.
-    """
     s = series.fillna("").astype(str).str.lower()
-    s = s.str.replace(r"http\\S+", " ", regex=True)          # URLs
-    s = s.str.replace("_", " ", regex=False)                  # underscores -> espace
-    s = s.str.replace(r"[^\w\s]+", " ", regex=True)          # garde \w (UNICODE) et espaces
-    s = s.str.replace(r"\s+", " ", regex=True).str.strip()   # espaces multiples
+    s = s.str.replace(r"http\S+", " ", regex=True)          # URLs
+    s = s.str.replace("_", " ", regex=False)                # underscores -> espace
+    s = s.str.replace(r"[^\w\s]+", " ", regex=True)         # garde \w (UNICODE) et espaces
+    s = s.str.replace(r"\s+", " ", regex=True).str.strip()  # espaces multiples
     return s
 
 def contains_any(text, kws):
@@ -62,5 +58,4 @@ def pick_examples(df_sub, n=3):
     def cut(s, L=220):
         s = re.sub(r"\s+", " ", s).strip()
         return s if len(s)<=L else s[:L-1]+"…"
-        # return s if len(s)<=L else s[:L-1]+"…"
     return [cut(x) for x in pos_examples], [cut(x) for x in neg_examples]
