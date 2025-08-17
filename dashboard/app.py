@@ -1,4 +1,4 @@
-# app.py — Clean UI v2 (sidebar filters, fixed sentiment colors, playtime profiles)
+# app.py — Clean UI v4 (sidebar with clear sections & dual playtime filter)
 import re
 from datetime import datetime, date, timedelta
 import numpy as np
@@ -48,7 +48,7 @@ elif clean_like:
             if isinstance(x, int): return str(x) if x > 0 else None
             if isinstance(x, str) and x.isdigit(): return x
             return None
-        app_ids = sorted(set(filter(None, (norm(x) for x in ids))))[:3000]  # avoid huge dropdowns
+        app_ids = sorted(set(filter(None, (norm(x) for x in ids))))[:3000]
     except Exception:
         app_ids = []
 else:
@@ -209,65 +209,88 @@ if st.session_state.date_min > st.session_state.date_max:
     st.session_state.date_min, st.session_state.date_max = st.session_state.date_max, st.session_state.date_min
 
 # ---------------------------------------------
-# Sidebar filters (structured)
+# Sidebar filters (clearly separated sections)
 # ---------------------------------------------
 def render_filters_sidebar(df, global_min, global_max):
     sb = st.sidebar
-    sb.header("🎛️ Filtres")
+    sb.header("🧭 Filtres")
 
-    sb.subheader("Essentiels")
-
+    # ========== 🎯 Essentiels ==========
+    sb.subheader("🎯 Essentiels")
     # Dates
     dmin = sb.date_input("📅 Depuis", value=st.session_state.date_min,
                          min_value=global_min, max_value=global_max, key="f_date_min")
     dmax = sb.date_input("📅 Jusqu’à", value=st.session_state.date_max,
                          min_value=global_min, max_value=global_max, key="f_date_max")
-
     col_q1, col_q2, col_q3 = sb.columns(3)
-    if col_q1.button("7 j", key="f_q7"):
-        st.session_state.date_min = max(global_min, global_max - timedelta(days=6))
-        st.session_state.date_max = global_max
-        st.rerun()
+    if col_q1.button("7 j", key="f_q7"): 
+        st.session_state.date_min = max(global_min, global_max - timedelta(days=6)); st.session_state.date_max = global_max; st.rerun()
     if col_q2.button("30 j", key="f_q30"):
-        st.session_state.date_min = max(global_min, global_max - timedelta(days=29))
-        st.session_state.date_max = global_max
-        st.rerun()
+        st.session_state.date_min = max(global_min, global_max - timedelta(days=29)); st.session_state.date_max = global_max; st.rerun()
     if col_q3.button("90 j", key="f_q90"):
-        st.session_state.date_min = max(global_min, global_max - timedelta(days=89))
-        st.session_state.date_max = global_max
-        st.rerun()
-
-    # Sentiment
-    senti_choice = sb.radio("🙂 Sentiment",
-                            options=["Tous", "Positifs", "Neutres", "Négatifs"],
-                            index=0, key="f_senti", horizontal=True)
-
-    # Play profiles
-    ALL_PROFILES = ["Découverte (≤1h)","Casual (1–5h)","Régulier (5–20h)","Core (20–100h)","Hardcore (>100h)","Inconnu"]
-    present_profiles = [p for p in ALL_PROFILES if p in df.get("play_profile", pd.Series(dtype=str)).unique().tolist()]
-    if not present_profiles: present_profiles = ["Inconnu"]
-    chosen_profiles = sb.multiselect("👤 Profils de jeu",
-                                     options=ALL_PROFILES,
-                                     default=present_profiles,
-                                     key="f_profiles")
+        st.session_state.date_min = max(global_min, global_max - timedelta(days=89)); st.session_state.date_max = global_max; st.rerun()
 
     # Langues
     langs = sorted(df["language"].dropna().unique().tolist())
     if not langs: langs = ["unknown"]
     chosen_langs = sb.multiselect("🌐 Langues", options=langs, default=langs, key="f_langs")
 
-    sb.subheader("Avancé")
-    keywords_raw = sb.text_input("🔎 Mots-clés (ex: bug, crash)", key="f_keywords")
-    match_all = sb.checkbox("ET logique (tous les mots)", value=False, key="f_keywords_all")
-    hard_refresh = sb.checkbox("Purger le cache avant calcul", value=False, key="f_hard_refresh")
+    sb.divider()
 
-    apply_clicked = sb.button("🔄 Appliquer / Rafraîchir", use_container_width=True)
-    reset_clicked = sb.button("♻️ Réinitialiser", use_container_width=True)
+    # ========== ⏱️ Heures de jeu ==========
+    sb.subheader("⏱️ Heures de jeu")
+    play_mode = sb.radio("Mode", ["Profils prédéfinis", "Plage d'heures"], key="f_play_mode", horizontal=True)
+
+    ALL_PROFILES = ["Découverte (≤1h)","Casual (1–5h)","Régulier (5–20h)","Core (20–100h)","Hardcore (>100h)","Inconnu"]
+    present_profiles = [p for p in ALL_PROFILES if p in df.get("play_profile", pd.Series(dtype=str)).unique().tolist()]
+    if not present_profiles: present_profiles = ["Inconnu"]
+
+    chosen_profiles = None
+    hours_min = None
+    hours_max = None
+    include_unknown = False
+
+    if play_mode == "Profils prédéfinis":
+        chosen_profiles = sb.multiselect("👤 Profils", options=ALL_PROFILES, default=present_profiles, key="f_profiles")
+    else:
+        h_series = pd.to_numeric(df.get("playtime_hours", pd.Series(dtype=float)), errors="coerce")
+        hmin = int(np.nanmin(h_series)) if h_series.notna().any() else 0
+        hmax_raw = int(np.nanmax(h_series)) if h_series.notna().any() else 0
+        hmax = max(hmin + 1, int(np.ceil(hmax_raw / 10) * 10) if hmax_raw > 0 else 10)
+        default_low = hmin
+        default_high = hmax_raw if hmax_raw > hmin else hmax
+        hours_min, hours_max = sb.slider("Plage (heures)", min_value=hmin, max_value=hmax,
+                                         value=(int(default_low), int(default_high)), step=1, key="f_play_range")
+        include_unknown = sb.checkbox("Inclure 'Inconnu'", value=False, key="f_play_inc_unknown")
+
+    sb.divider()
+
+    # ========== 🙂 Sentiment ==========
+    sb.subheader("🙂 Sentiment")
+    senti_choice = sb.radio("", options=["Tous", "Positifs", "Neutres", "Négatifs"],
+                            index=0, key="f_senti", horizontal=True)
+
+    sb.divider()
+
+    # ========== 🔎 Mots-clés ==========
+    sb.subheader("🔎 Mots-clés")
+    keywords_raw = sb.text_input("Ex: bug, crash", key="f_keywords")
+    match_all = sb.checkbox("ET logique (tous les mots)", value=False, key="f_keywords_all")
+
+    sb.divider()
+
+    # ========== ⚙️ Actions ==========
+    sb.subheader("⚙️ Actions")
+    hard_refresh = sb.checkbox("🧹 Purger le cache avant calcul", value=False, key="f_hard_refresh")
+    col_a, col_b = sb.columns(2)
+    apply_clicked = col_a.button("🔄 Appliquer", use_container_width=True)
+    reset_clicked = col_b.button("♻️ Réinitialiser", use_container_width=True)
 
     if reset_clicked:
         st.session_state.date_min = global_min
         st.session_state.date_max = global_max
         st.session_state.f_senti = "Tous"
+        st.session_state.f_play_mode = "Profils prédéfinis"
         st.session_state.f_profiles = present_profiles
         st.session_state.f_langs = langs
         st.session_state.f_keywords = ""
@@ -287,7 +310,11 @@ def render_filters_sidebar(df, global_min, global_max):
     return {
         "chosen_langs": chosen_langs,
         "senti_choice": senti_choice,
+        "play_mode": play_mode,
         "chosen_profiles": chosen_profiles,
+        "hours_min": hours_min,
+        "hours_max": hours_max,
+        "include_unknown": include_unknown,
         "keywords_raw": keywords_raw,
         "match_all": match_all,
     }
@@ -310,8 +337,16 @@ elif flt["senti_choice"] == "Neutres":
 elif flt["senti_choice"] == "Négatifs":
     mask &= df["sentiment"] < -0.05
 
-if flt["chosen_profiles"]:
-    mask &= df["play_profile"].isin(flt["chosen_profiles"])
+# Playtime filter
+if flt["play_mode"] == "Profils prédéfinis":
+    if flt["chosen_profiles"]:
+        mask &= df["play_profile"].isin(flt["chosen_profiles"])
+else:
+    ph = pd.to_numeric(df["playtime_hours"], errors="coerce") if "playtime_hours" in df.columns else pd.Series(index=df.index, dtype=float)
+    in_range = ph.between(flt["hours_min"], flt["hours_max"], inclusive="both")
+    if flt["include_unknown"]:
+        in_range = in_range | ph.isna()
+    mask &= in_range
 
 df_f = df[mask].copy()
 
@@ -326,8 +361,18 @@ if kw and kw.strip() and not df_f.empty:
             pattern = r"\b(" + "|".join([re.escape(k) for k in kws]) + r")\b"
         df_f = df_f[df_f["review_text"].astype(str).str.contains(pattern, regex=True, na=False)]
 
+# Caption
+if flt["play_mode"] == "Profils prédéfinis":
+    play_txt = f"Profils: {', '.join(flt['chosen_profiles']) if flt['chosen_profiles'] else '—'}"
+else:
+    rng = f"{flt['hours_min']}–{flt['hours_max']}h"
+    if flt["include_unknown"]:
+        rng += " (+ inconnus)"
+    play_txt = f"Heures: {rng}"
+
 st.caption(
     f"🗓️ **{st.session_state.date_min} → {st.session_state.date_max}** • "
+    f"{play_txt} • "
     f"Avis filtrés : **{len(df_f):,}**"
 )
 

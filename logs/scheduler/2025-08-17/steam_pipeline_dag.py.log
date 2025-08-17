@@ -2718,3 +2718,259 @@ Traceback (most recent call last):
 ModuleNotFoundError: No module named 'tqdm'
 [2025-08-17T06:48:30.875+0000] {processor.py:842} WARNING - No viable dags retrieved from /opt/airflow/dags/steam_pipeline_dag.py
 [2025-08-17T06:48:30.894+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/steam_pipeline_dag.py took 0.098 seconds
+[2025-08-17T06:49:01.586+0000] {processor.py:161} INFO - Started process (PID=186) to work on /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:49:01.587+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/steam_pipeline_dag.py for tasks to queue
+[2025-08-17T06:49:01.589+0000] {logging_mixin.py:188} INFO - [2025-08-17T06:49:01.589+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:49:01.664+0000] {logging_mixin.py:188} INFO - [2025-08-17T06:49:01.655+0000] {dagbag.py:355} ERROR - Failed to import: /opt/airflow/dags/steam_pipeline_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 351, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/steam_pipeline_dag.py", line 13, in <module>
+    from etl.bronze_extract import extract_app
+  File "/opt/airflow/etl/bronze_extract.py", line 3, in <module>
+    from tqdm import tqdm
+ModuleNotFoundError: No module named 'tqdm'
+[2025-08-17T06:49:01.669+0000] {processor.py:842} WARNING - No viable dags retrieved from /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:49:01.690+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/steam_pipeline_dag.py took 0.110 seconds
+[2025-08-17T06:49:31.948+0000] {processor.py:161} INFO - Started process (PID=187) to work on /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:49:31.949+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/steam_pipeline_dag.py for tasks to queue
+[2025-08-17T06:49:31.951+0000] {logging_mixin.py:188} INFO - [2025-08-17T06:49:31.951+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:49:32.009+0000] {logging_mixin.py:188} INFO - [2025-08-17T06:49:32.004+0000] {dagbag.py:355} ERROR - Failed to import: /opt/airflow/dags/steam_pipeline_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 351, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/steam_pipeline_dag.py", line 13, in <module>
+    from etl.bronze_extract import extract_app
+  File "/opt/airflow/etl/bronze_extract.py", line 3, in <module>
+    from tqdm import tqdm
+ModuleNotFoundError: No module named 'tqdm'
+[2025-08-17T06:49:32.012+0000] {processor.py:842} WARNING - No viable dags retrieved from /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:49:32.030+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/steam_pipeline_dag.py took 0.088 seconds
+[2025-08-17T06:50:02.673+0000] {processor.py:161} INFO - Started process (PID=188) to work on /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:50:02.674+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/steam_pipeline_dag.py for tasks to queue
+[2025-08-17T06:50:02.682+0000] {logging_mixin.py:188} INFO - [2025-08-17T06:50:02.682+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:50:02.755+0000] {logging_mixin.py:188} INFO - [2025-08-17T06:50:02.748+0000] {dagbag.py:355} ERROR - Failed to import: /opt/airflow/dags/steam_pipeline_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 351, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/steam_pipeline_dag.py", line 13, in <module>
+    from etl.bronze_extract import extract_app
+  File "/opt/airflow/etl/bronze_extract.py", line 3, in <module>
+    from tqdm import tqdm
+ModuleNotFoundError: No module named 'tqdm'
+[2025-08-17T06:50:02.758+0000] {processor.py:842} WARNING - No viable dags retrieved from /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:50:02.775+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/steam_pipeline_dag.py took 0.108 seconds
+[2025-08-17T06:50:33.100+0000] {processor.py:161} INFO - Started process (PID=189) to work on /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:50:33.101+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/steam_pipeline_dag.py for tasks to queue
+[2025-08-17T06:50:33.104+0000] {logging_mixin.py:188} INFO - [2025-08-17T06:50:33.104+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:50:33.186+0000] {logging_mixin.py:188} INFO - [2025-08-17T06:50:33.178+0000] {dagbag.py:355} ERROR - Failed to import: /opt/airflow/dags/steam_pipeline_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 351, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/steam_pipeline_dag.py", line 13, in <module>
+    from etl.bronze_extract import extract_app
+  File "/opt/airflow/etl/bronze_extract.py", line 3, in <module>
+    from tqdm import tqdm
+ModuleNotFoundError: No module named 'tqdm'
+[2025-08-17T06:50:33.189+0000] {processor.py:842} WARNING - No viable dags retrieved from /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:50:33.235+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/steam_pipeline_dag.py took 0.143 seconds
+[2025-08-17T06:51:03.662+0000] {processor.py:161} INFO - Started process (PID=190) to work on /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:51:03.673+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/steam_pipeline_dag.py for tasks to queue
+[2025-08-17T06:51:03.679+0000] {logging_mixin.py:188} INFO - [2025-08-17T06:51:03.679+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:51:03.771+0000] {logging_mixin.py:188} INFO - [2025-08-17T06:51:03.758+0000] {dagbag.py:355} ERROR - Failed to import: /opt/airflow/dags/steam_pipeline_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 351, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/steam_pipeline_dag.py", line 13, in <module>
+    from etl.bronze_extract import extract_app
+  File "/opt/airflow/etl/bronze_extract.py", line 3, in <module>
+    from tqdm import tqdm
+ModuleNotFoundError: No module named 'tqdm'
+[2025-08-17T06:51:03.776+0000] {processor.py:842} WARNING - No viable dags retrieved from /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:51:03.798+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/steam_pipeline_dag.py took 0.158 seconds
+[2025-08-17T06:51:34.136+0000] {processor.py:161} INFO - Started process (PID=191) to work on /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:51:34.137+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/steam_pipeline_dag.py for tasks to queue
+[2025-08-17T06:51:34.140+0000] {logging_mixin.py:188} INFO - [2025-08-17T06:51:34.139+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:51:34.215+0000] {logging_mixin.py:188} INFO - [2025-08-17T06:51:34.204+0000] {dagbag.py:355} ERROR - Failed to import: /opt/airflow/dags/steam_pipeline_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 351, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/steam_pipeline_dag.py", line 13, in <module>
+    from etl.bronze_extract import extract_app
+  File "/opt/airflow/etl/bronze_extract.py", line 3, in <module>
+    from tqdm import tqdm
+ModuleNotFoundError: No module named 'tqdm'
+[2025-08-17T06:51:34.221+0000] {processor.py:842} WARNING - No viable dags retrieved from /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:51:34.243+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/steam_pipeline_dag.py took 0.115 seconds
+[2025-08-17T06:52:05.128+0000] {processor.py:161} INFO - Started process (PID=192) to work on /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:52:05.129+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/steam_pipeline_dag.py for tasks to queue
+[2025-08-17T06:52:05.131+0000] {logging_mixin.py:188} INFO - [2025-08-17T06:52:05.131+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:52:05.223+0000] {logging_mixin.py:188} INFO - [2025-08-17T06:52:05.215+0000] {dagbag.py:355} ERROR - Failed to import: /opt/airflow/dags/steam_pipeline_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 351, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/steam_pipeline_dag.py", line 13, in <module>
+    from etl.bronze_extract import extract_app
+  File "/opt/airflow/etl/bronze_extract.py", line 3, in <module>
+    from tqdm import tqdm
+ModuleNotFoundError: No module named 'tqdm'
+[2025-08-17T06:52:05.226+0000] {processor.py:842} WARNING - No viable dags retrieved from /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:52:05.242+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/steam_pipeline_dag.py took 0.119 seconds
+[2025-08-17T06:52:35.777+0000] {processor.py:161} INFO - Started process (PID=193) to work on /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:52:35.778+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/steam_pipeline_dag.py for tasks to queue
+[2025-08-17T06:52:35.781+0000] {logging_mixin.py:188} INFO - [2025-08-17T06:52:35.781+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:52:35.848+0000] {logging_mixin.py:188} INFO - [2025-08-17T06:52:35.840+0000] {dagbag.py:355} ERROR - Failed to import: /opt/airflow/dags/steam_pipeline_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 351, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/steam_pipeline_dag.py", line 13, in <module>
+    from etl.bronze_extract import extract_app
+  File "/opt/airflow/etl/bronze_extract.py", line 3, in <module>
+    from tqdm import tqdm
+ModuleNotFoundError: No module named 'tqdm'
+[2025-08-17T06:52:35.851+0000] {processor.py:842} WARNING - No viable dags retrieved from /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:52:35.869+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/steam_pipeline_dag.py took 0.098 seconds
+[2025-08-17T06:53:06.705+0000] {processor.py:161} INFO - Started process (PID=194) to work on /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:53:06.706+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/steam_pipeline_dag.py for tasks to queue
+[2025-08-17T06:53:06.708+0000] {logging_mixin.py:188} INFO - [2025-08-17T06:53:06.708+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:53:06.755+0000] {logging_mixin.py:188} INFO - [2025-08-17T06:53:06.750+0000] {dagbag.py:355} ERROR - Failed to import: /opt/airflow/dags/steam_pipeline_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 351, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/steam_pipeline_dag.py", line 13, in <module>
+    from etl.bronze_extract import extract_app
+  File "/opt/airflow/etl/bronze_extract.py", line 3, in <module>
+    from tqdm import tqdm
+ModuleNotFoundError: No module named 'tqdm'
+[2025-08-17T06:53:06.758+0000] {processor.py:842} WARNING - No viable dags retrieved from /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:53:06.771+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/steam_pipeline_dag.py took 0.070 seconds
+[2025-08-17T06:53:37.264+0000] {processor.py:161} INFO - Started process (PID=195) to work on /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:53:37.265+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/steam_pipeline_dag.py for tasks to queue
+[2025-08-17T06:53:37.272+0000] {logging_mixin.py:188} INFO - [2025-08-17T06:53:37.272+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:53:37.335+0000] {logging_mixin.py:188} INFO - [2025-08-17T06:53:37.328+0000] {dagbag.py:355} ERROR - Failed to import: /opt/airflow/dags/steam_pipeline_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 351, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/steam_pipeline_dag.py", line 13, in <module>
+    from etl.bronze_extract import extract_app
+  File "/opt/airflow/etl/bronze_extract.py", line 3, in <module>
+    from tqdm import tqdm
+ModuleNotFoundError: No module named 'tqdm'
+[2025-08-17T06:53:37.337+0000] {processor.py:842} WARNING - No viable dags retrieved from /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:53:37.354+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/steam_pipeline_dag.py took 0.096 seconds
+[2025-08-17T06:54:07.511+0000] {processor.py:161} INFO - Started process (PID=196) to work on /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:54:07.513+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/steam_pipeline_dag.py for tasks to queue
+[2025-08-17T06:54:07.517+0000] {logging_mixin.py:188} INFO - [2025-08-17T06:54:07.516+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:54:07.587+0000] {logging_mixin.py:188} INFO - [2025-08-17T06:54:07.581+0000] {dagbag.py:355} ERROR - Failed to import: /opt/airflow/dags/steam_pipeline_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 351, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/steam_pipeline_dag.py", line 13, in <module>
+    from etl.bronze_extract import extract_app
+  File "/opt/airflow/etl/bronze_extract.py", line 3, in <module>
+    from tqdm import tqdm
+ModuleNotFoundError: No module named 'tqdm'
+[2025-08-17T06:54:07.589+0000] {processor.py:842} WARNING - No viable dags retrieved from /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:54:07.613+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/steam_pipeline_dag.py took 0.110 seconds
+[2025-08-17T06:54:38.531+0000] {processor.py:161} INFO - Started process (PID=197) to work on /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:54:38.532+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/steam_pipeline_dag.py for tasks to queue
+[2025-08-17T06:54:38.535+0000] {logging_mixin.py:188} INFO - [2025-08-17T06:54:38.534+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:54:38.607+0000] {logging_mixin.py:188} INFO - [2025-08-17T06:54:38.598+0000] {dagbag.py:355} ERROR - Failed to import: /opt/airflow/dags/steam_pipeline_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 351, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/steam_pipeline_dag.py", line 13, in <module>
+    from etl.bronze_extract import extract_app
+  File "/opt/airflow/etl/bronze_extract.py", line 3, in <module>
+    from tqdm import tqdm
+ModuleNotFoundError: No module named 'tqdm'
+[2025-08-17T06:54:38.609+0000] {processor.py:842} WARNING - No viable dags retrieved from /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:54:38.631+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/steam_pipeline_dag.py took 0.107 seconds
+[2025-08-17T06:55:08.895+0000] {processor.py:161} INFO - Started process (PID=198) to work on /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:55:08.897+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/steam_pipeline_dag.py for tasks to queue
+[2025-08-17T06:55:08.899+0000] {logging_mixin.py:188} INFO - [2025-08-17T06:55:08.898+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:55:08.984+0000] {logging_mixin.py:188} INFO - [2025-08-17T06:55:08.974+0000] {dagbag.py:355} ERROR - Failed to import: /opt/airflow/dags/steam_pipeline_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 351, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/steam_pipeline_dag.py", line 13, in <module>
+    from etl.bronze_extract import extract_app
+  File "/opt/airflow/etl/bronze_extract.py", line 3, in <module>
+    from tqdm import tqdm
+ModuleNotFoundError: No module named 'tqdm'
+[2025-08-17T06:55:08.986+0000] {processor.py:842} WARNING - No viable dags retrieved from /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:55:09.012+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/steam_pipeline_dag.py took 0.122 seconds
+[2025-08-17T06:55:39.387+0000] {processor.py:161} INFO - Started process (PID=199) to work on /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:55:39.388+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/steam_pipeline_dag.py for tasks to queue
+[2025-08-17T06:55:39.390+0000] {logging_mixin.py:188} INFO - [2025-08-17T06:55:39.389+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:55:39.460+0000] {logging_mixin.py:188} INFO - [2025-08-17T06:55:39.452+0000] {dagbag.py:355} ERROR - Failed to import: /opt/airflow/dags/steam_pipeline_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 351, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/steam_pipeline_dag.py", line 13, in <module>
+    from etl.bronze_extract import extract_app
+  File "/opt/airflow/etl/bronze_extract.py", line 3, in <module>
+    from tqdm import tqdm
+ModuleNotFoundError: No module named 'tqdm'
+[2025-08-17T06:55:39.462+0000] {processor.py:842} WARNING - No viable dags retrieved from /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:55:39.476+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/steam_pipeline_dag.py took 0.094 seconds
+[2025-08-17T06:56:10.095+0000] {processor.py:161} INFO - Started process (PID=200) to work on /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:56:10.097+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/steam_pipeline_dag.py for tasks to queue
+[2025-08-17T06:56:10.101+0000] {logging_mixin.py:188} INFO - [2025-08-17T06:56:10.100+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:56:10.178+0000] {logging_mixin.py:188} INFO - [2025-08-17T06:56:10.169+0000] {dagbag.py:355} ERROR - Failed to import: /opt/airflow/dags/steam_pipeline_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 351, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/steam_pipeline_dag.py", line 13, in <module>
+    from etl.bronze_extract import extract_app
+  File "/opt/airflow/etl/bronze_extract.py", line 3, in <module>
+    from tqdm import tqdm
+ModuleNotFoundError: No module named 'tqdm'
+[2025-08-17T06:56:10.183+0000] {processor.py:842} WARNING - No viable dags retrieved from /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:56:10.202+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/steam_pipeline_dag.py took 0.114 seconds
+[2025-08-17T06:56:41.252+0000] {processor.py:161} INFO - Started process (PID=201) to work on /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:56:41.254+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/steam_pipeline_dag.py for tasks to queue
+[2025-08-17T06:56:41.256+0000] {logging_mixin.py:188} INFO - [2025-08-17T06:56:41.256+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:56:41.347+0000] {logging_mixin.py:188} INFO - [2025-08-17T06:56:41.336+0000] {dagbag.py:355} ERROR - Failed to import: /opt/airflow/dags/steam_pipeline_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 351, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/steam_pipeline_dag.py", line 13, in <module>
+    from etl.bronze_extract import extract_app
+  File "/opt/airflow/etl/bronze_extract.py", line 3, in <module>
+    from tqdm import tqdm
+ModuleNotFoundError: No module named 'tqdm'
+[2025-08-17T06:56:41.352+0000] {processor.py:842} WARNING - No viable dags retrieved from /opt/airflow/dags/steam_pipeline_dag.py
+[2025-08-17T06:56:41.377+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/steam_pipeline_dag.py took 0.132 seconds
