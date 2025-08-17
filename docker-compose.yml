@@ -2,7 +2,6 @@
 services:
   mongo:
     image: mongo:6
-    container_name: steam-mongo
     restart: unless-stopped
     ports:
       - "27017:27017"
