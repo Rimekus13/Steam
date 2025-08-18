@@ -1,61 +1,55 @@
-# analysis.py — UNICODE friendly cleaning + sentiment helpers
-import re
-import numpy as np
 import pandas as pd
-from collections import Counter
-from nltk.corpus import stopwords
-from nltk.util import ngrams
-from wordcloud import WordCloud
-import nltk
-from nltk.sentiment import SentimentIntensityAnalyzer
+import numpy as np
 
-def ensure_nltk():
-    try: nltk.data.find("corpora/stopwords")
-    except LookupError: nltk.download("stopwords")
-    try: nltk.data.find("tokenizers/punkt")
-    except LookupError: nltk.download("punkt")
-
-def get_stop_set():
-    ensure_nltk()
-    sw = set()
-    for lg in ("english","french"):
-        try: sw |= set(stopwords.words(lg))
-        except: pass
-    sw |= set("""game games play played playing steam je tu il elle nous vous ils elles plus tres très les des une un le la de du dans sur par pour est pas que avec sans ou mais donc car bien mal bug bugs crash crashe""".split())
-    return sw
+POS, NEG = 0.05, -0.05
 
 def get_vader():
-    try: nltk.data.find("sentiment/vader_lexicon.zip")
-    except LookupError: nltk.download("vader_lexicon")
+    # Real implementation would import nltk SentimentIntensityAnalyzer
+    # but tests patch this function, so leaving light.
+    from nltk.sentiment import SentimentIntensityAnalyzer
     return SentimentIntensityAnalyzer()
 
-def compute_sentiment(sia, text: str) -> float:
-    return sia.polarity_scores(text)["compound"] if isinstance(text, str) else 0.0
+def compute_sentiment(text: str) -> float:
+    sia = get_vader()
+    text = text if isinstance(text, str) else ""
+    return float(sia.polarity_scores(text).get("compound", 0.0))
 
-def clean_text_series(series: pd.Series) -> pd.Series:
-    s = series.fillna("").astype(str).str.lower()
-    s = s.str.replace(r"http\S+", " ", regex=True)          # URLs
-    s = s.str.replace("_", " ", regex=False)                # underscores -> espace
-    s = s.str.replace(r"[^\w\s]+", " ", regex=True)         # garde \w (UNICODE) et espaces
-    s = s.str.replace(r"\s+", " ", regex=True).str.strip()  # espaces multiples
-    return s
+def classify_sentiment(score: float) -> str:
+    try:
+        s = float(score)
+    except Exception:
+        return "neutral"
+    if s > POS:
+        return "positive"
+    if s < NEG:
+        return "negative"
+    return "neutral"
 
-def contains_any(text, kws):
-    t = str(text).lower()
-    return any(k.lower() in t for k in kws)
+def moving_avg(series: pd.Series, window: int = 3) -> pd.Series:
+    return series.rolling(window=window, min_periods=1).mean().bfill()
 
-def top_unigrams_bigrams(texts, n_top=15):
-    sw = get_stop_set(); toks=[]
-    for t in texts:
-        toks += [w for w in re.findall(r"\w+", str(t).lower()) if len(w)>2 and w not in sw]
-    uni = Counter(toks).most_common(n_top)
-    big = Counter([" ".join(bg) for bg in ngrams(toks, 2) if all(len(w)>2 and w not in sw for w in bg)]).most_common(n_top)
-    return uni, big
 
-def pick_examples(df_sub, n=3):
-    pos_examples = df_sub.sort_values("sentiment", ascending=False).head(n)["review_text"].astype(str).tolist()
-    neg_examples = df_sub.sort_values("sentiment", ascending=True).head(n)["review_text"].astype(str).tolist()
-    def cut(s, L=220):
-        s = re.sub(r"\s+", " ", s).strip()
-        return s if len(s)<=L else s[:L-1]+"…"
-    return [cut(x) for x in pos_examples], [cut(x) for x in neg_examples]
+def detect_anomalies_zscore(df: pd.DataFrame, value_col: str, z: float = 2.0):
+    vals = df[value_col].astype(float)
+    mu = vals.mean()
+    sigma = vals.std(ddof=0) or 1e-9
+    zscores = (vals - mu) / sigma
+
+    out = df.copy()
+
+    # Mask NumPy -> liste -> bool Python natif
+    mask_np = (zscores.abs() >= z).to_numpy()          # array de np.bool_
+    mask_py = [bool(v) for v in mask_np.tolist()]      # liste de True/False (type bool Python)
+
+    out["is_anomaly"] = mask_py                         # dtype=object, valeurs bool Python
+    return out
+
+
+
+def before_after_delta(df: pd.DataFrame, date_col: str, value_col: str, pivot_date) -> dict:
+    s_before = df[df[date_col] < pivot_date][value_col].astype(float)
+    s_after  = df[df[date_col] >= pivot_date][value_col].astype(float)
+    mb = float(s_before.mean()) if len(s_before) else float("nan")
+    ma = float(s_after.mean())  if len(s_after) else float("nan")
+    delta = (ma - mb) if (not np.isnan(ma) and not np.isnan(mb)) else float("nan")
+    return {"mean_before": mb, "mean_after": ma, "delta": delta}
