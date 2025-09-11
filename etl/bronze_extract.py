@@ -1,6 +1,6 @@
 # etl/bronze_extract.py
 from datetime import datetime
-from tqdm import tqdm
+
 from pathlib import Path
 import gzip, json, hashlib
 
@@ -44,7 +44,8 @@ def extract_app(app_id: str, mode: str = "incr", for_airflow: bool = False,
     total_unique = 0
     total_expected = None
 
-    pbar = tqdm(desc=f"Extract {app_id}", unit="rev")
+    print(f"[INFO] Start extraction for {app_id}")
+
 
     while True:
         pages += 1
@@ -92,8 +93,7 @@ def extract_app(app_id: str, mode: str = "incr", for_airflow: bool = False,
         # Ajoute la page AU CHUNK (on stocke la page brute, pas filtrée)
         chunk.extend(reviews)
         total_unique += len(new_ids)
-        pbar.update(len(new_ids))
-        pbar.set_postfix(pages=pages, chunk_len=len(chunk))
+        print(f"[DEBUG] page={pages}, new_ids={len(new_ids)}, chunk_len={len(chunk)}")
 
         # Watermark
         max_page_updated = 0
@@ -131,7 +131,7 @@ def extract_app(app_id: str, mode: str = "incr", for_airflow: bool = False,
     if chunk:
         _flush_chunk(out_dir, chunk_idx, chunk)
 
-    pbar.close()
+    
     print(f"[INFO] Pages fetched={pages-1}, unique reviews seen≈{len(seen_ids)}")
     save_state(app_id, {"max_timestamp_updated": max_seen, "last_cursor": cursor or "*"})
     return dt
